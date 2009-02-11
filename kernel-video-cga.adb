@@ -43,7 +43,7 @@ package body Kernel.Video.Cga is
                                   X : in Video_Page_X;
                                   Y : in Video_Page_Y;
                                   Color : in Color_Type) is
-      Offset : Video_Cell_Index := Xy_To_Video_Cell_Index(X,Y);
+      Offset : constant Video_Cell_Index := Xy_To_Video_Cell_Index(X,Y);
    begin
       Vidmem(Page)(Offset).Color := Color;
    end Set_Video_Cell_Color;
@@ -57,4 +57,28 @@ package body Kernel.Video.Cga is
       Vidmem(Page)(Offset).Char := Char;
    end Set_Video_Cell_Character;
 
+   procedure Page_Scroll_Lines(Page : in Video_Page_Index;
+                               Count : in Scroll_Line_Count) is
+      Shift : constant Video_Cell_Index := Count * Video_Page_Line_Width;
+   begin
+      if Count = Scroll_Line_Count'Last then
+         Clear_Page(Page);
+         return;
+      end if;
+
+      for I in Video_Cell_Index range 0 .. Video_Cell_Index'Last-Shift loop
+         Vidmem(Page)(I) := Vidmem(Page)(I + Shift);
+      end loop;
+
+      for I in Video_Cell_Index
+        range Video_Cell_Index'Last - Shift + 1 .. Video_Cell_Index'Last loop
+         Vidmem(Page)(I) := Black_Video_Memory_Cell;
+      end loop;
+
+   end Page_Scroll_Lines;
+
+   procedure Page_Scroll_Line(Page : in Video_Page_Index) is
+   begin
+      Page_Scroll_Lines(Page, 1);
+   end Page_Scroll_Line;
 end Kernel.Video.Cga;

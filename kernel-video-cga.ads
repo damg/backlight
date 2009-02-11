@@ -76,4 +76,11 @@ package Kernel.Video.Cga is
                                       X : in Video_Page_X;
                                       Y : in Video_Page_Y;
                                       Char : in Character);
+
+   -- count of lines to scroll on page
+   subtype Scroll_Line_Count is Integer range 1 .. Video_Page_Line_Count;
+
+   procedure Page_Scroll_Lines(Page : in Video_Page_Index;
+                               Count : in Scroll_Line_Count);
+   procedure Page_Scroll_Line(Page : in Video_Page_Index);
 end Kernel.Video.Cga;
