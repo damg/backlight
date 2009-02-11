@@ -6,9 +6,10 @@ package body Kernel.Stdlib is
 
       procedure Last_Chance_Handler (Source_Location : System.Address;
                                      Line : Integer) is
-         Red_Color_Blinking : constant Video.Cga.Color_Type := (Video.Cga.Color_Red,
-                                                                Video.Cga.Color_Red,
-                                                                True);
+         Red_Color_Blinking : constant Video.Cga.Color_Type :=
+           (Video.Cga.Color_Red,
+            Video.Cga.Color_Red,
+            True);
       begin
          Video.Cga.Fill_Video_Memory(Red_Color_Blinking);
          Video.Cga.Set_Video_Cell_Character(0, 0, 0, 'E');
