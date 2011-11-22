@@ -3,14 +3,14 @@ all: kernel.obj image.iso
 %.os: %.asm
 	nasm -f elf $< -o $@
 
-kernel.o: kernel.adb kernel.ads
-	gnat compile -c kernel.adb
+backlight-kernel-kmain.o: backlight-kernel-kmain.adb backlight-kernel-kmain.ads
+	gnat compile -c backlight-kernel-kmain.adb
 
-multiboot.o: multiboot.ads
-	gnat compile -c multiboot.ads
+backlight-kernel-multiboot.o: backlight-kernel-multiboot.ads
+	gnat compile -c backlight-kernel-multiboot.ads
 
-kernel.obj: linker.ld stub.os kernel.o multiboot.o
-	ld -Tlinker.ld -o $@ stub.os kernel.o multiboot.o
+kernel.obj: linker.ld stub.os backlight-kernel-kmain.o backlight-kernel-multiboot.o
+	ld -Tlinker.ld -o $@ stub.os backlight-kernel-kmain.o backlight-kernel-multiboot.o
 
 image.iso: kernel.obj grub.conf
 	mkdir -p isofiles/boot/grub

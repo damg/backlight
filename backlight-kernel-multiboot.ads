@@ -1,6 +1,6 @@
 pragma No_Run_Time ;
 
-package Multiboot is
+package Backlight.Kernel.Multiboot is
    Kernel_Stacksize : constant := 16#4000#;
    Multiboot_Bootloader_Magic : constant := 16#2badb002#;
 
@@ -48,4 +48,4 @@ package Multiboot is
    end record;
 
    type Acc_Memory_Map is access Memory_Map;
-end Multiboot;
+end Backlight.Kernel.Multiboot;
