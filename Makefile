@@ -1,4 +1,4 @@
-all: kernel.obj
+all: kernel.obj image.iso
 
 %.os: %.asm
 	nasm -f elf $< -o $@
@@ -9,16 +9,8 @@ kernel.o: kernel.adb kernel.ads
 multiboot.o: multiboot.ads
 	gnat compile -c multiboot.ads
 
-kernel-stdlib.o: kernel-stdlib.ads kernel-stdlib.adb
-	gnat compile -c kernel-stdlib.adb
-
-kernel.obj: linker.ld stub.os kernel.o multiboot.o \
-	    kernel-stdlib.o kernel-video-cga.o
-	ld -Tlinker.ld -o $@ stub.os kernel.o multiboot.o \
-		kernel-stdlib.o kernel-video-cga.o
-
-kernel-video-cga.o: kernel-video-cga.ads kernel-video-cga.adb
-	gnat compile -c kernel-video-cga.adb
+kernel.obj: linker.ld stub.os kernel.o multiboot.o
+	ld -Tlinker.ld -o $@ stub.os kernel.o multiboot.o
 
 image.iso: kernel.obj grub.conf
 	mkdir -p isofiles/boot/grub
@@ -33,4 +25,4 @@ run: image.iso
 .PHONY: run clean
 
 clean:
-	rm -rf isofiles kernel.obj *.os *.o *~ *.ppu *.iso *.s
+	rm -rf isofiles kernel.obj *.os *.o *~ *.ppu *.iso *.s *.ali
