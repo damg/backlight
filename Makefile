@@ -6,14 +6,16 @@ all: kernel.obj image.iso
 %.os: %.asm
 	nasm -f elf $< -o $@
 
-backlight-kernel-kmain.o: backlight-kernel-kmain.adb backlight-kernel-kmain.ads
-	gcc $(GCCFLAGS) -c backlight-kernel-kmain.adb
+%.adbo: %.adb %.ads
+	gcc $(GCCFLAGS) -c $<
+	mv $(@:.adbo=.o) $@
 
-backlight-kernel-multiboot.o: backlight-kernel-multiboot.ads
-	gcc $(GCCFLAGS) -c backlight-kernel-multiboot.ads
+%.adso: %.ads
+	gcc $(GCCFLAGS) -c $<
+	mv $(@:.adso=.o) $@
 
-kernel.obj: linker.ld stub.os backlight-kernel-kmain.o backlight-kernel-multiboot.o
-	ld $(LDFLAGS) -Tlinker.ld -o $@ stub.os backlight-kernel-kmain.o backlight-kernel-multiboot.o
+kernel.obj: linker.ld stub.os backlight-kernel-kmain.adbo backlight-kernel-multiboot.adso
+	ld $(LDFLAGS) -Tlinker.ld -o $@ $(^:linker.ld=)
 
 image.iso: kernel.obj grub.conf
 	mkdir -p isofiles/boot/grub
@@ -28,4 +30,4 @@ run: image.iso
 .PHONY: run clean
 
 clean:
-	rm -rf isofiles kernel.obj *.os *.o *~ *.ppu *.iso *.s *.ali
+	rm -rf isofiles kernel.obj *.os *.o *~ *.ppu *.iso *.s *.ali *.adbo *.adso

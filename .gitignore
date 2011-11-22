@@ -5,3 +5,5 @@
 *.iso
 *.obj
 isofiles
+*.adbo
+*.adso
